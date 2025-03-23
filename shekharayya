@@ -1,12 +1,7 @@
-**Flight Data Analysis and Reporting**
-
-### **GitHub Repository Link:**  
-(Add your repository link here)
-
-### **SQL Queries for Flight Data Analysis**
+###Flight Data Analysis**
 
 #### **1. Calculate the Average Delay in Departures for Delayed Flights**
-```sql
+
 SELECT AVG(TIMESTAMPDIFF(MINUTE, scheduled_departure, actual_departure)) AS avg_delay
 FROM FLIGHTS
 WHERE actual_departure > scheduled_departure;
