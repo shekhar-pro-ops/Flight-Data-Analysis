@@ -1,0 +1,121 @@
+**Flight Data Analysis and Reporting**
+
+### **GitHub Repository Link:**  
+(Add your repository link here)
+
+### **SQL Queries for Flight Data Analysis**
+
+#### **1. Calculate the Average Delay in Departures for Delayed Flights**
+```sql
+SELECT AVG(TIMESTAMPDIFF(MINUTE, scheduled_departure, actual_departure)) AS avg_delay
+FROM FLIGHTS
+WHERE actual_departure > scheduled_departure;
+```
+
+#### **2. List Flights Grouped by Aircraft to See Usage Frequency**
+```sql
+SELECT aircraft_code, COUNT(*) AS flight_count
+FROM FLIGHTS
+GROUP BY aircraft_code;
+```
+
+#### **3. Calculate Total Revenue per Flight**
+```sql
+SELECT flight_id, SUM(amount) AS total_revenue
+FROM TICKET_FLIGHTS
+GROUP BY flight_id;
+```
+
+#### **4. Analyze Boarding Numbers per Flight**
+```sql
+SELECT flight_id, AVG(boarding_no) AS avg_boarding_number
+FROM BOARDING_PASSES
+GROUP BY flight_id;
+```
+
+#### **5. Determine Occupancy and Fare Conditions per Aircraft**
+```sql
+SELECT f.aircraft_code, COUNT(b.boarding_no) AS occupied_seats, s.total_seats,
+       (COUNT(b.boarding_no) / s.total_seats) * 100 AS occupancy_rate, s.fare_conditions
+FROM FLIGHTS f
+JOIN SEATS s ON f.aircraft_code = s.aircraft_code
+LEFT JOIN BOARDING_PASSES b ON f.flight_id = b.flight_id
+GROUP BY f.aircraft_code, s.fare_conditions;
+```
+
+#### **6. Top 3 Flights by Revenue**
+```sql
+SELECT flight_id, SUM(amount) AS total_revenue
+FROM TICKET_FLIGHTS
+GROUP BY flight_id
+ORDER BY total_revenue DESC
+LIMIT 3;
+```
+
+#### **7. Average Flight Duration by Aircraft Model**
+```sql
+SELECT aircraft_code, AVG(TIMESTAMPDIFF(MINUTE, scheduled_departure, actual_arrival)) AS avg_flight_duration
+FROM FLIGHTS
+GROUP BY aircraft_code;
+```
+
+#### **8. Flight Count per Airport (Departure and Arrival)**
+```sql
+SELECT departure_airport, COUNT(*) AS departure_count
+FROM FLIGHTS
+GROUP BY departure_airport;
+```
+```sql
+SELECT arrival_airport, COUNT(*) AS arrival_count
+FROM FLIGHTS
+GROUP BY arrival_airport;
+```
+
+#### **9. Daily Booking Trends**
+```sql
+SELECT DATE(book_date) AS booking_date, COUNT(*) AS total_bookings, SUM(total_amount) AS total_revenue
+FROM BOOKINGS
+GROUP BY booking_date
+ORDER BY booking_date;
+```
+
+#### **10. Frequent Routes Analysis**
+```sql
+SELECT departure_airport, arrival_airport, COUNT(*) AS route_count
+FROM FLIGHTS
+GROUP BY departure_airport, arrival_airport
+ORDER BY route_count DESC;
+```
+
+#### **11. Passenger Boarding Summary per Flight**
+```sql
+SELECT flight_id, COUNT(boarding_no) AS total_boarded
+FROM BOARDING_PASSES
+GROUP BY flight_id;
+```
+
+#### **12. Average Boarding Number per Flight**
+```sql
+SELECT flight_id, AVG(boarding_no) AS avg_boarding_no
+FROM BOARDING_PASSES
+GROUP BY flight_id;
+```
+
+#### **13. Seat Occupancy Rate per Flight**
+```sql
+SELECT f.flight_id, COUNT(b.boarding_no) AS occupied_seats, s.total_seats,
+       (COUNT(b.boarding_no) / s.total_seats) * 100 AS occupancy_rate
+FROM FLIGHTS f
+JOIN SEATS s ON f.aircraft_code = s.aircraft_code
+LEFT JOIN BOARDING_PASSES b ON f.flight_id = b.flight_id
+GROUP BY f.flight_id, s.total_seats;
+```
+
+#### **14. Total Spend per Passenger**
+```sql
+SELECT t.passenger_id, SUM(tf.amount) AS total_spent
+FROM TICKETS t
+JOIN TICKET_FLIGHTS tf ON t.ticket_no = tf.ticket_no
+GROUP BY t.passenger_id;
+```
+
